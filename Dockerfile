@@ -19,5 +19,9 @@ RUN pip install --no-cache-dir -r requirements.txt \
 COPY bot.py resolver.py ./
 
 # HEADLESS=false (default) + xvfb-run => headful browser inside a virtual display.
-ENV HEADLESS=false
-CMD ["xvfb-run", "-a", "--server-args=-screen 0 1280x800x24", "python", "bot.py"]
+ENV HEADLESS=false \
+    PYTHONUNBUFFERED=1
+
+# Emit a startup marker before launching the bot so Railway logs distinguish
+# an Xvfb startup failure from a Python/Telegram initialization failure.
+CMD ["sh", "-c", "echo '[startup] launching Xvfb and AroLinks bot'; exec xvfb-run -a --server-args=-screen\\ 0\\ 1280x800x24 python -u bot.py"]
