@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import os
 import re
+import sys
 
 from dotenv import load_dotenv
 from telegram import Update
@@ -21,6 +22,8 @@ URL_RE = re.compile(r"https?://[^\s<>]+", re.IGNORECASE)
 logging.basicConfig(
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
     level=logging.INFO,
+    handlers=[logging.StreamHandler(sys.stdout)],
+    force=True,
 )
 LOGGER = logging.getLogger(__name__)
 
@@ -157,7 +160,13 @@ def main() -> None:
     )
     application.add_error_handler(on_error)
 
-    LOGGER.info("Starting AroLinks resolver bot")
+    LOGGER.info(
+        "Startup config: HEADLESS=%s RESOLVE_TIMEOUT_SECONDS=%s ACCESS=%s",
+        os.getenv("HEADLESS", "false"),
+        os.getenv("RESOLVE_TIMEOUT_SECONDS", "90"),
+        "restricted" if application.bot_data["allowed_user_ids"] else "open",
+    )
+    LOGGER.info("Starting AroLinks resolver bot; Telegram polling will begin after Chromium initializes")
     application.run_polling(drop_pending_updates=True)
 
 
