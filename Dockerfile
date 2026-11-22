@@ -24,4 +24,4 @@ ENV HEADLESS=false \
 
 # Emit a startup marker before launching the bot so Railway logs distinguish
 # an Xvfb startup failure from a Python/Telegram initialization failure.
-CMD ["sh", "-c", "echo '[startup] launching Xvfb and AroLinks bot'; exec xvfb-run -a --server-args=-screen\\ 0\\ 1280x800x24 python -u bot.py"]
+CMD ["sh", "-c", "echo '[startup] launching Xvfb and AroLinks bot'; exec xvfb-run -a python -u bot.py"]
